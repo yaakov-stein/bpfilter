@@ -37,6 +37,7 @@
 #include <bpfilter/verdict.h>
 
 #include "cgen/cgroup.h"
+#include "cgen/cgroup_sock_addr.h"
 #include "cgen/dump.h"
 #include "cgen/fixup.h"
 #include "cgen/jmp.h"
@@ -84,7 +85,7 @@ static const struct bf_flavor_ops *bf_flavor_ops_get(enum bf_flavor flavor)
         [BF_FLAVOR_NF] = &bf_flavor_ops_nf,
         [BF_FLAVOR_XDP] = &bf_flavor_ops_xdp,
         [BF_FLAVOR_CGROUP] = &bf_flavor_ops_cgroup,
-        [BF_FLAVOR_CGROUP_SOCK_ADDR] = NULL,
+        [BF_FLAVOR_CGROUP_SOCK_ADDR] = &bf_flavor_ops_cgroup_sock_addr,
     };
 
     static_assert(ARRAY_SIZE(flavor_ops) == _BF_FLAVOR_MAX,

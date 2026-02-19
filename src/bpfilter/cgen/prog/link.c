@@ -206,6 +206,7 @@ int bf_link_attach(struct bf_link *link, enum bf_hook hook,
         fd = r;
         break;
     case BF_FLAVOR_CGROUP:
+    case BF_FLAVOR_CGROUP_SOCK_ADDR:
         cgroup_fd = open(_hookopts->cgpath, O_DIRECTORY | O_RDONLY);
         if (cgroup_fd < 0) {
             return bf_err_r(errno, "failed to open cgroup '%s'",
@@ -291,6 +292,7 @@ int bf_link_update(struct bf_link *link, enum bf_hook hook, int prog_fd)
     case BF_FLAVOR_XDP:
     case BF_FLAVOR_TC:
     case BF_FLAVOR_CGROUP:
+    case BF_FLAVOR_CGROUP_SOCK_ADDR:
         r = bf_bpf_link_update(link->fd, prog_fd);
         break;
     case BF_FLAVOR_NF:

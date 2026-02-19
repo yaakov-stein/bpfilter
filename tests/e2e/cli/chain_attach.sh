@@ -40,6 +40,15 @@ ${FROM_NS} bfcli chain attach --name chain_attach_cgroup_1 --option cgpath=/sys/
 ${FROM_NS} bfcli chain flush --name chain_attach_cgroup_0
 ${FROM_NS} bfcli chain flush --name chain_attach_cgroup_1
 
+# cgroup sock_addr (connect4)
+${FROM_NS} bfcli chain load --from-str "chain chain_attach_sockaddr_0 BF_HOOK_CGROUP_CONNECT4 ACCEPT"
+${FROM_NS} bfcli chain attach --name chain_attach_sockaddr_0 --option cgpath=/sys/fs/cgroup
+${FROM_NS} bfcli chain load --from-str "chain chain_attach_sockaddr_1 BF_HOOK_CGROUP_CONNECT4 DROP"
+${FROM_NS} bfcli chain attach --name chain_attach_sockaddr_1 --option cgpath=/sys/fs/cgroup
+(! nc -z -w 1 ${NS_IP_ADDR} 80)
+${FROM_NS} bfcli chain flush --name chain_attach_sockaddr_0
+${FROM_NS} bfcli chain flush --name chain_attach_sockaddr_1
+
 # Netfilter
 ping -c 1 -W 0.1 ${NS_IP_ADDR}
 ${FROM_NS} bfcli chain load --from-str "chain chain_attach_nf_0 BF_HOOK_NF_LOCAL_IN ACCEPT rule ip4.proto icmp counter DROP"
