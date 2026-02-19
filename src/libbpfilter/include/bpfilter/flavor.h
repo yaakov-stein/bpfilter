@@ -61,6 +61,15 @@ enum bf_flavor
      * - Return code: 0 to drop, 1 to accept
      */
     BF_FLAVOR_CGROUP,
+
+    /**
+     * cgroup sock_addr BPF programs, attached to cgroups to intercept socket
+     * operations (connect, bind, sendmsg, recvmsg):
+     * - Input: `struct bpf_sock_addr`
+     * - Headers available: none (socket metadata only)
+     * - Return code: 0 to drop, 1 to accept
+     */
+    BF_FLAVOR_CGROUP_SOCK_ADDR,
     _BF_FLAVOR_MAX,
 };
 

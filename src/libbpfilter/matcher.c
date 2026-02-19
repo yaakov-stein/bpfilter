@@ -833,6 +833,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
     [BF_MATCHER_META_IFACE] =
         {
             .layer = BF_MATCHER_NO_LAYER,
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint32_t),
@@ -862,6 +864,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
     [BF_MATCHER_META_SPORT] =
         {
             .layer = BF_MATCHER_NO_LAYER,
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint16_t),
@@ -876,6 +880,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
     [BF_MATCHER_META_DPORT] =
         {
             .layer = BF_MATCHER_NO_LAYER,
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint16_t),
@@ -900,7 +906,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
     [BF_MATCHER_META_MARK] =
         {
             .layer = BF_MATCHER_NO_LAYER,
-            .unsupported_hooks = BF_FLAGS(BF_HOOK_XDP),
+            .unsupported_hooks = BF_FLAGS(BF_HOOK_XDP, BF_HOOK_CGROUP_CONNECT4,
+                                          BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint32_t),
@@ -915,7 +922,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .unsupported_hooks = BF_FLAGS(
                 BF_HOOK_XDP, BF_HOOK_CGROUP_INGRESS, BF_HOOK_CGROUP_EGRESS,
                 BF_HOOK_NF_FORWARD, BF_HOOK_NF_LOCAL_IN, BF_HOOK_NF_LOCAL_OUT,
-                BF_HOOK_NF_POST_ROUTING, BF_HOOK_NF_PRE_ROUTING),
+                BF_HOOK_NF_POST_ROUTING, BF_HOOK_NF_PRE_ROUTING,
+                BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint32_t),
@@ -932,6 +940,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IP,
             .hdr_payload_size = sizeof(uint32_t),
             .hdr_payload_offset = offsetof(struct iphdr, saddr),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint32_t),
@@ -948,6 +958,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IP,
             .hdr_payload_size = sizeof(uint32_t),
             .hdr_payload_offset = offsetof(struct iphdr, daddr),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint32_t),
@@ -964,6 +976,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IP,
             .hdr_payload_size = sizeof(uint32_t),
             .hdr_payload_offset = offsetof(struct iphdr, saddr),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(struct bf_ip4_lpm_key),
@@ -980,6 +994,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IP,
             .hdr_payload_size = sizeof(uint32_t),
             .hdr_payload_offset = offsetof(struct iphdr, daddr),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(struct bf_ip4_lpm_key),
@@ -996,6 +1012,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IP,
             .hdr_payload_size = sizeof(uint8_t),
             .hdr_payload_offset = offsetof(struct iphdr, protocol),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint8_t),
@@ -1012,6 +1030,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IP,
             .hdr_payload_size = sizeof(uint8_t),
             .hdr_payload_offset = offsetof(struct iphdr, tos),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint8_t), _bf_parse_u8,
@@ -1026,6 +1046,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IPV6,
             .hdr_payload_size = sizeof(struct in6_addr),
             .hdr_payload_offset = offsetof(struct ipv6hdr, saddr),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(struct in6_addr),
@@ -1042,6 +1064,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IPV6,
             .hdr_payload_size = sizeof(struct in6_addr),
             .hdr_payload_offset = offsetof(struct ipv6hdr, daddr),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(struct in6_addr),
@@ -1058,6 +1082,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IPV6,
             .hdr_payload_size = sizeof(struct in6_addr),
             .hdr_payload_offset = offsetof(struct ipv6hdr, saddr),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(struct bf_ip6_lpm_key),
@@ -1074,6 +1100,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IPV6,
             .hdr_payload_size = sizeof(struct in6_addr),
             .hdr_payload_offset = offsetof(struct ipv6hdr, daddr),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(struct bf_ip6_lpm_key),
@@ -1090,6 +1118,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IPV6,
             .hdr_payload_size = sizeof(uint8_t),
             .hdr_payload_offset = offsetof(struct ipv6hdr, nexthdr),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint8_t),
@@ -1106,6 +1136,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = ETH_P_IPV6,
             .hdr_payload_size = sizeof(uint8_t),
             .hdr_payload_offset = 0,
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint8_t), _bf_parse_u8,
@@ -1120,6 +1152,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = IPPROTO_TCP,
             .hdr_payload_size = sizeof(uint16_t),
             .hdr_payload_offset = offsetof(struct tcphdr, source),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint16_t),
@@ -1139,6 +1173,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = IPPROTO_TCP,
             .hdr_payload_size = sizeof(uint16_t),
             .hdr_payload_offset = offsetof(struct tcphdr, dest),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint16_t),
@@ -1158,6 +1194,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = IPPROTO_TCP,
             .hdr_payload_size = sizeof(uint8_t),
             .hdr_payload_offset = _BF_TCP_FLAGS_OFFSET,
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint8_t),
@@ -1176,6 +1214,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = IPPROTO_UDP,
             .hdr_payload_size = sizeof(uint16_t),
             .hdr_payload_offset = offsetof(struct udphdr, source),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint16_t),
@@ -1195,6 +1235,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = IPPROTO_UDP,
             .hdr_payload_size = sizeof(uint16_t),
             .hdr_payload_offset = offsetof(struct udphdr, dest),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint16_t),
@@ -1214,6 +1256,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = IPPROTO_ICMP,
             .hdr_payload_size = sizeof(uint8_t),
             .hdr_payload_offset = offsetof(struct icmphdr, type),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint8_t),
@@ -1230,6 +1274,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = IPPROTO_ICMP,
             .hdr_payload_size = sizeof(uint8_t),
             .hdr_payload_offset = offsetof(struct icmphdr, code),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint8_t),
@@ -1246,6 +1292,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = IPPROTO_ICMPV6,
             .hdr_payload_size = sizeof(uint8_t),
             .hdr_payload_offset = offsetof(struct icmp6hdr, icmp6_type),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint8_t),
@@ -1265,6 +1313,8 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
             .hdr_id = IPPROTO_ICMPV6,
             .hdr_payload_size = sizeof(uint8_t),
             .hdr_payload_offset = offsetof(struct icmp6hdr, icmp6_code),
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_CGROUP_CONNECT4, BF_HOOK_CGROUP_CONNECT6),
             .ops =
                 {
                     BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint8_t),
