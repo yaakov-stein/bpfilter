@@ -24,6 +24,7 @@
 
 #include <bpfilter/chain.h>
 #include <bpfilter/counter.h>
+#include <bpfilter/flavor.h>
 #include <bpfilter/helper.h>
 #include <bpfilter/hook.h>
 #include <bpfilter/list.h>
@@ -137,12 +138,26 @@ void bfc_chain_dump(struct bf_chain *chain, struct bf_hookopts *hookopts,
     (void)fprintf(stdout, " %s\n", bf_verdict_to_str(chain->policy));
 
     counter = bf_list_node_get_data(policy_counter_node);
-    (void)fprintf(stdout, "    counters policy %lu packets %lu bytes; ",
-                  counter->packets, counter->bytes);
+    (void)fprintf(stdout, "    counters policy %lu ", counter->count);
+    switch (bf_hook_to_flavor(chain->hook)) {
+    case BF_FLAVOR_CGROUP_SOCK_ADDR:
+        (void)fprintf(stdout, "calls; ");
+        break;
+    default:
+        (void)fprintf(stdout, "packets %lu bytes; ", counter->size);
+        break;
+    }
 
     counter = bf_list_node_get_data(err_counter_node);
-    (void)fprintf(stdout, "error %lu packets %lu bytes\n", counter->packets,
-                  counter->bytes);
+    (void)fprintf(stdout, "error %lu ", counter->count);
+    switch (bf_hook_to_flavor(chain->hook)) {
+    case BF_FLAVOR_CGROUP_SOCK_ADDR:
+        (void)fprintf(stdout, "calls\n");
+        break;
+    default:
+        (void)fprintf(stdout, "packets %lu bytes\n", counter->size);
+        break;
+    }
 
     // Loop over named sets
     bf_list_foreach (&chain->sets, set_node) {
@@ -270,8 +285,15 @@ void bfc_chain_dump(struct bf_chain *chain, struct bf_hookopts *hookopts,
 
         if (rule->counters) {
             counter = bf_list_node_get_data(counter_node);
-            (void)fprintf(stdout, "        counters %lu packets %lu bytes\n",
-                          counter->packets, counter->bytes);
+            (void)fprintf(stdout, "        counters %lu ", counter->count);
+            switch (bf_hook_to_flavor(chain->hook)) {
+            case BF_FLAVOR_CGROUP_SOCK_ADDR:
+                (void)fprintf(stdout, "calls\n");
+                break;
+            default:
+                (void)fprintf(stdout, "packets %lu bytes\n", counter->size);
+                break;
+            }
         }
         counter_node = bf_list_node_next(counter_node);
 

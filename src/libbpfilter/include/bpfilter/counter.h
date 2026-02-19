@@ -15,15 +15,17 @@
  *
  * Counters assigned to each rule.
  *
- * @var bf_counter::packets
- *  Number of packets gone through a rule.
- * @var bf_counter::bytes
- *  Number of bytes gone through a rule.
+ * @var bf_counter::count
+ *  Number of times the counter has been hit (packets for packet hooks,
+ *  syscalls for sock_addr hooks).
+ * @var bf_counter::size
+ *  Accumulated size in bytes. Always 0 for non-packet hooks (e.g.
+ *  cgroup_sock_addr).
  */
 struct bf_counter
 {
-    uint64_t packets;
-    uint64_t bytes;
+    uint64_t count;
+    uint64_t size;
 };
 
 #define _free_bf_counter_ __attribute__((__cleanup__(bf_counter_free)))
@@ -35,12 +37,11 @@ struct bf_counter
  * owned by the caller.
  *
  * @param counter Output pointer for the new @ref bf_counter. Can't be NULL.
- * @param packets Initial packet count.
- * @param bytes   Initial byte count.
+ * @param count Initial hit count.
+ * @param size  Initial accumulated size.
  * @return 0 on success, negative errno on error.
  */
-int bf_counter_new(struct bf_counter **counter, uint64_t packets,
-                   uint64_t bytes);
+int bf_counter_new(struct bf_counter **counter, uint64_t count, uint64_t size);
 
 /**
  * @brief Allocate and initialize a new counter from serialized data.
