@@ -276,6 +276,10 @@ icmp(v6)?\.code { BEGIN(STATE_MATCHER_ICMP_CODE); yylval.sval = strdup(yytext); 
     }
 }
 
+sockaddr\.ip4   { BEGIN(STATE_MATCHER_IPV4_ADDR); yylval.sval = strdup(yytext); return MATCHER_TYPE; }
+sockaddr\.ip6   { BEGIN(STATE_MATCHER_IP6_ADDR); yylval.sval = strdup(yytext); return MATCHER_TYPE; }
+sockaddr\.port  { BEGIN(STATE_MATCHER_PORT); yylval.sval = strdup(yytext); return MATCHER_TYPE; }
+
 tcp\.flags      { BEGIN(STATE_MATCHER_TCP_FLAGS); yylval.sval = strdup(yytext); return MATCHER_TYPE; }
 <STATE_MATCHER_TCP_FLAGS>{
     (eq|not|any|all) { yylval.sval = strdup(yytext); return MATCHER_OP; }

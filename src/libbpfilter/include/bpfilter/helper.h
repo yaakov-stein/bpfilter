@@ -114,7 +114,7 @@ extern const char *strerrordesc_np(int errnum);
  *
  * @return `1 << n` to be used as a flag.
  */
-#define BF_FLAG(n) (1 << (n))
+#define BF_FLAG(n) (1ULL << (n))
 
 #define bf_packed __attribute__((packed))
 #define bf_aligned(x) __attribute__((aligned(x)))

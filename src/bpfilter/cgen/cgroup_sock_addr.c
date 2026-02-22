@@ -24,26 +24,22 @@
 // Forward definition to avoid headers complications
 uint16_t htons(uint16_t hostshort);
 
-static int _bf_cgroup_sock_addr_gen_inline_prologue(
-    struct bf_program *program)
+static int _bf_cgroup_sock_addr_gen_inline_prologue(struct bf_program *program)
 {
     int r;
 
     assert(program);
 
     // pkt_size = 0: no packet data for sock_addr programs
-    EMIT(program,
-         BPF_ST_MEM(BPF_DW, BPF_REG_10, BF_PROG_CTX_OFF(pkt_size), 0));
+    EMIT(program, BPF_ST_MEM(BPF_DW, BPF_REG_10, BF_PROG_CTX_OFF(pkt_size), 0));
 
     // ifindex = 0: no interface for sock_addr programs
-    EMIT(program,
-         BPF_ST_MEM(BPF_W, BPF_REG_10, BF_PROG_CTX_OFF(ifindex), 0));
+    EMIT(program, BPF_ST_MEM(BPF_W, BPF_REG_10, BF_PROG_CTX_OFF(ifindex), 0));
 
     /* Read bpf_sock_addr.family and convert to ethertype for R7.
      * Same pattern as BF_FLAVOR_CGROUP. */
-    EMIT(program,
-         BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
-                      offsetof(struct bpf_sock_addr, family)));
+    EMIT(program, BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
+                              offsetof(struct bpf_sock_addr, family)));
 
     {
         _clean_bf_swich_ struct bf_swich swich =
@@ -61,23 +57,21 @@ static int _bf_cgroup_sock_addr_gen_inline_prologue(
     }
 
     // Read bpf_sock_addr.protocol into R8
-    EMIT(program,
-         BPF_LDX_MEM(BPF_W, BPF_REG_8, BPF_REG_1,
-                      offsetof(struct bpf_sock_addr, protocol)));
+    EMIT(program, BPF_LDX_MEM(BPF_W, BPF_REG_8, BPF_REG_1,
+                              offsetof(struct bpf_sock_addr, protocol)));
 
     return 0;
 }
 
-static int _bf_cgroup_sock_addr_gen_inline_epilogue(
-    struct bf_program *program)
+static int _bf_cgroup_sock_addr_gen_inline_epilogue(struct bf_program *program)
 {
     (void)program;
 
     return 0;
 }
 
-static int _bf_cgroup_sock_addr_gen_inline_set_mark(
-    struct bf_program *program, uint32_t mark)
+static int _bf_cgroup_sock_addr_gen_inline_set_mark(struct bf_program *program,
+                                                    uint32_t mark)
 {
     (void)program;
     (void)mark;
@@ -85,8 +79,8 @@ static int _bf_cgroup_sock_addr_gen_inline_set_mark(
     return -ENOTSUP;
 }
 
-static int _bf_cgroup_sock_addr_gen_inline_get_mark(
-    struct bf_program *program, int reg)
+static int _bf_cgroup_sock_addr_gen_inline_get_mark(struct bf_program *program,
+                                                    int reg)
 {
     (void)program;
     (void)reg;
@@ -94,8 +88,8 @@ static int _bf_cgroup_sock_addr_gen_inline_get_mark(
     return -ENOTSUP;
 }
 
-static int _bf_cgroup_sock_addr_gen_inline_get_skb(
-    struct bf_program *program, int reg)
+static int _bf_cgroup_sock_addr_gen_inline_get_skb(struct bf_program *program,
+                                                   int reg)
 {
     (void)program;
     (void)reg;

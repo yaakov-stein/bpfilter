@@ -106,6 +106,12 @@ enum bf_matcher_type
     BF_MATCHER_ICMPV6_TYPE,
     /// Matches against the ICMPv6 code
     BF_MATCHER_ICMPV6_CODE,
+    /// Matches the destination IPv4 address in a sock_addr context.
+    BF_MATCHER_SOCKADDR_IP4,
+    /// Matches the destination IPv6 address in a sock_addr context.
+    BF_MATCHER_SOCKADDR_IP6,
+    /// Matches the destination port in a sock_addr context.
+    BF_MATCHER_SOCKADDR_PORT,
     /// Matches in a set, the set knows how to build the key from the packet
     BF_MATCHER_SET,
     _BF_MATCHER_TYPE_MAX,

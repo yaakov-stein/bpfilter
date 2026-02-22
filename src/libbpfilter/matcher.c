@@ -1325,6 +1325,59 @@ static struct bf_matcher_meta _bf_matcher_metas[_BF_MATCHER_TYPE_MAX] = {
                                    _bf_parse_icmp_code, _bf_print_icmp_code),
                 },
         },
+    [BF_MATCHER_SOCKADDR_IP4] =
+        {
+            .layer = BF_MATCHER_NO_LAYER,
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_XDP, BF_HOOK_TC_INGRESS, BF_HOOK_TC_EGRESS,
+                         BF_HOOK_NF_PRE_ROUTING, BF_HOOK_NF_LOCAL_IN,
+                         BF_HOOK_NF_FORWARD, BF_HOOK_NF_LOCAL_OUT,
+                         BF_HOOK_NF_POST_ROUTING, BF_HOOK_CGROUP_INGRESS,
+                         BF_HOOK_CGROUP_EGRESS) |
+                BF_FLAG(BF_HOOK_CGROUP_CONNECT6),
+            .ops =
+                {
+                    BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint32_t),
+                                   _bf_parse_ipv4_addr, _bf_print_ipv4_addr),
+                    BF_MATCHER_OPS(BF_MATCHER_NE, sizeof(uint32_t),
+                                   _bf_parse_ipv4_addr, _bf_print_ipv4_addr),
+                },
+        },
+    [BF_MATCHER_SOCKADDR_IP6] =
+        {
+            .layer = BF_MATCHER_NO_LAYER,
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_XDP, BF_HOOK_TC_INGRESS, BF_HOOK_TC_EGRESS,
+                         BF_HOOK_NF_PRE_ROUTING, BF_HOOK_NF_LOCAL_IN,
+                         BF_HOOK_NF_FORWARD, BF_HOOK_NF_LOCAL_OUT,
+                         BF_HOOK_NF_POST_ROUTING, BF_HOOK_CGROUP_INGRESS,
+                         BF_HOOK_CGROUP_EGRESS) |
+                BF_FLAG(BF_HOOK_CGROUP_CONNECT4),
+            .ops =
+                {
+                    BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(struct in6_addr),
+                                   _bf_parse_ipv6_addr, _bf_print_ipv6_addr),
+                    BF_MATCHER_OPS(BF_MATCHER_NE, sizeof(struct in6_addr),
+                                   _bf_parse_ipv6_addr, _bf_print_ipv6_addr),
+                },
+        },
+    [BF_MATCHER_SOCKADDR_PORT] =
+        {
+            .layer = BF_MATCHER_NO_LAYER,
+            .unsupported_hooks =
+                BF_FLAGS(BF_HOOK_XDP, BF_HOOK_TC_INGRESS, BF_HOOK_TC_EGRESS,
+                         BF_HOOK_NF_PRE_ROUTING, BF_HOOK_NF_LOCAL_IN,
+                         BF_HOOK_NF_FORWARD, BF_HOOK_NF_LOCAL_OUT,
+                         BF_HOOK_NF_POST_ROUTING, BF_HOOK_CGROUP_INGRESS,
+                         BF_HOOK_CGROUP_EGRESS),
+            .ops =
+                {
+                    BF_MATCHER_OPS(BF_MATCHER_EQ, sizeof(uint16_t),
+                                   _bf_parse_l4_port, _bf_print_l4_port),
+                    BF_MATCHER_OPS(BF_MATCHER_NE, sizeof(uint16_t),
+                                   _bf_parse_l4_port, _bf_print_l4_port),
+                },
+        },
 };
 
 const struct bf_matcher_meta *bf_matcher_get_meta(enum bf_matcher_type type)
@@ -1542,6 +1595,9 @@ static const char *_bf_matcher_type_strs[] = {
     [BF_MATCHER_ICMP_CODE] = "icmp.code",
     [BF_MATCHER_ICMPV6_TYPE] = "icmpv6.type",
     [BF_MATCHER_ICMPV6_CODE] = "icmpv6.code",
+    [BF_MATCHER_SOCKADDR_IP4] = "sockaddr.ip4",
+    [BF_MATCHER_SOCKADDR_IP6] = "sockaddr.ip6",
+    [BF_MATCHER_SOCKADDR_PORT] = "sockaddr.port",
     [BF_MATCHER_SET] = "<set>",
 };
 

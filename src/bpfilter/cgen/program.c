@@ -46,6 +46,7 @@
 #include "cgen/matcher/ip6.h"
 #include "cgen/matcher/meta.h"
 #include "cgen/matcher/set.h"
+#include "cgen/matcher/sockaddr.h"
 #include "cgen/matcher/tcp.h"
 #include "cgen/matcher/udp.h"
 #include "cgen/nf.h"
@@ -572,6 +573,13 @@ static int _bf_program_generate_rule(struct bf_program *program,
         case BF_MATCHER_ICMPV6_TYPE:
         case BF_MATCHER_ICMPV6_CODE:
             r = bf_matcher_generate_icmp(program, matcher);
+            if (r)
+                return r;
+            break;
+        case BF_MATCHER_SOCKADDR_IP4:
+        case BF_MATCHER_SOCKADDR_IP6:
+        case BF_MATCHER_SOCKADDR_PORT:
+            r = bf_matcher_generate_sockaddr(program, matcher);
             if (r)
                 return r;
             break;
