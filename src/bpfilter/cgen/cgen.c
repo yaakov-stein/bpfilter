@@ -12,6 +12,7 @@
 #include <string.h>
 #include <sys/types.h>
 
+#include <bpfilter/bpf.h>
 #include <bpfilter/chain.h>
 #include <bpfilter/counter.h>
 #include <bpfilter/dump.h>
@@ -27,6 +28,7 @@
 #include "cgen/dump.h"
 #include "cgen/handle.h"
 #include "cgen/prog/link.h"
+#include "cgen/prog/map.h"
 #include "cgen/program.h"
 #include "ctx.h"
 #include "opts.h"
@@ -334,7 +336,50 @@ int bf_cgen_attach(struct bf_cgen *cgen, const struct bf_ns *ns,
     return r;
 }
 
-int bf_cgen_update(struct bf_cgen *cgen, struct bf_chain **new_chain)
+/**
+ * @brief Transfer all counters from old handle to new handle.
+ *
+ * Copies counter values 1:1 for all rule counters plus policy and error
+ * counters. The old and new chains must have the same number of rules.
+ *
+ * @param old_handle Handle with the source counter map. Can't be NULL.
+ * @param new_handle Handle with the destination counter map. Can't be NULL.
+ * @param n_rules Number of rules in the chain.
+ * @return 0 on success, or a negative errno value on failure.
+ */
+static int _bf_cgen_transfer_counters(const struct bf_handle *old_handle,
+                                      struct bf_handle *new_handle,
+                                      size_t n_rules)
+{
+    int r;
+
+    assert(old_handle);
+    assert(new_handle);
+
+    if (!old_handle->cmap || !new_handle->cmap)
+        return bf_err_r(-ENOENT, "missing counter map for counter transfer");
+
+    // n_rules entries for rules, +1 for policy, +1 for errors.
+    for (uint32_t i = 0; i < n_rules + 2; ++i) {
+        struct bf_counter counter;
+
+        r = bf_handle_get_counter(old_handle, i, &counter);
+        if (r)
+            return bf_err_r(r, "failed to read counter %u", i);
+
+        if (!counter.packets && !counter.bytes)
+            continue;
+
+        r = bf_bpf_map_update_elem(new_handle->cmap->fd, &i, &counter, 0);
+        if (r)
+            return bf_err_r(r, "failed to write counter %u", i);
+    }
+
+    return 0;
+}
+
+int bf_cgen_update(struct bf_cgen *cgen, struct bf_chain **new_chain,
+                   uint32_t flags)
 {
     _free_bf_program_ struct bf_program *new_prog = NULL;
     _free_bf_handle_ struct bf_handle *new_handle = NULL;
@@ -370,6 +415,13 @@ int bf_cgen_update(struct bf_cgen *cgen, struct bf_chain **new_chain)
     r = bf_program_load(new_prog);
     if (r)
         return bf_err_r(r, "failed to load new program");
+
+    if (flags & BF_FLAG(BF_CGEN_UPDATE_PRESERVE_COUNTERS)) {
+        r = _bf_cgen_transfer_counters(old_handle, new_handle,
+                                       bf_list_size(&(*new_chain)->rules));
+        if (r)
+            return bf_err_r(r, "failed to transfer counters");
+    }
 
     if (bf_opts_persist())
         bf_handle_unpin(old_handle, pindir_fd);

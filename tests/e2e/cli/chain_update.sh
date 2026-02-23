@@ -23,3 +23,17 @@ ${FROM_NS} bfcli chain update --from-str "chain chain_load_xdp_3 BF_HOOK_XDP ACC
 ${FROM_NS} bfcli chain update --name chain_load_xdp_3 --from-str "chain chain_load_xdp_3 BF_HOOK_XDP{ifindex=${NS_IFINDEX}} ACCEPT"
 ping -c 1 -W 0.1 ${NS_IP_ADDR}
 ${FROM_NS} bfcli chain flush --name chain_load_xdp_3
+
+# Counters are reset after chain update
+${FROM_NS} bfcli chain set --from-str "chain chain_load_xdp_4 BF_HOOK_XDP{ifindex=${NS_IFINDEX}} ACCEPT
+    rule ip4.proto icmp counter DROP
+"
+ping -c 1 -W 0.1 ${NS_IP_ADDR} || true
+counter=$(${FROM_NS} bfcli chain get --name chain_load_xdp_4 | awk '/^        counters [0-9]+ packets/{print $2}')
+test "$counter" = "1"
+${FROM_NS} bfcli chain update --from-str "chain chain_load_xdp_4 BF_HOOK_XDP ACCEPT
+    rule ip4.proto icmp counter DROP
+"
+counter=$(${FROM_NS} bfcli chain get --name chain_load_xdp_4 | awk '/^        counters [0-9]+ packets/{print $2}')
+test "$counter" = "0"
+${FROM_NS} bfcli chain flush --name chain_load_xdp_4
