@@ -1,0 +1,3 @@
+TRAFFIC="icmp4"
+MATCH_RULE="icmp.type eq 8"
+NOMATCH_RULE="icmp.type eq 0"

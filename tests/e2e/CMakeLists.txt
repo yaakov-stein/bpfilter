@@ -47,9 +47,15 @@ add_custom_target(e2e_bin
 )
 
 add_custom_target(e2e
-    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -L e2e
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -L "^e2e$$"
     DEPENDS e2e_bin
     COMMENT "Running end-to-end tests"
+)
+
+add_custom_target(e2e_full
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -L "e2e"
+    DEPENDS e2e_bin
+    COMMENT "Running end-to-end tests (including hook tests)"
 )
 
 bf_add_e2e_test(e2e cli/chain_attach.sh ROOT)
@@ -111,8 +117,27 @@ bf_add_e2e_test(e2e rules/log.sh ROOT)
 bf_add_e2e_test(e2e rules/mark.sh ROOT)
 bf_add_e2e_test(e2e rules/redirect.sh ROOT)
 
-bf_add_e2e_test(e2e hooks/cgroup_sock_addr_connect4.sh ROOT)
-bf_add_e2e_test(e2e hooks/cgroup_sock_addr_connect6.sh ROOT)
+function(bf_add_hook_test HOOK_FILE)
+    cmake_path(GET HOOK_FILE STEM hook_name)
+    set(target_name "e2e.hooks.${hook_name}")
+    add_test(NAME ${target_name}
+        COMMAND
+            ${CMAKE_SOURCE_DIR}/tools/asroot
+            ${CMAKE_CURRENT_SOURCE_DIR}/hooks/driver.sh
+            ${CMAKE_CURRENT_SOURCE_DIR}/hooks/${HOOK_FILE})
+    set_tests_properties(${target_name} PROPERTIES
+        LABELS "e2e_hooks"
+        ENVIRONMENT "PATH=${CMAKE_BINARY_DIR}/output/sbin:${CMAKE_CURRENT_SOURCE_DIR}:$ENV{PATH}")
+endfunction()
+
+bf_add_hook_test(xdp.sh)
+bf_add_hook_test(tc_ingress.sh)
+bf_add_hook_test(tc_egress.sh)
+bf_add_hook_test(nf_pre_routing.sh)
+bf_add_hook_test(nf_local_in.sh)
+bf_add_hook_test(nf_local_out.sh)
+bf_add_hook_test(nf_post_routing.sh)
+bf_add_hook_test(cgroup_sock_addr_connect4.sh)
+bf_add_hook_test(cgroup_sock_addr_connect6.sh)
 
 bf_add_e2e_test(e2e rulesets/rulesets.sh ROOT)
-

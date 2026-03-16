@@ -1,0 +1,3 @@
+TRAFFIC="icmp6"
+MATCH_RULE="icmpv6.type eq 128"
+NOMATCH_RULE="icmpv6.type eq 129"

@@ -1,0 +1,3 @@
+TRAFFIC="tcp6"
+MATCH_RULE="ip6.nexthdr eq tcp"
+NOMATCH_RULE="ip6.nexthdr eq udp"

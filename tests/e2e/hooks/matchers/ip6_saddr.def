@@ -1,0 +1,3 @@
+TRAFFIC="tcp6"
+MATCH_RULE="ip6.saddr eq \$TRAFFIC_SRC_IP6"
+NOMATCH_RULE="ip6.saddr eq 2001:db8::dead"

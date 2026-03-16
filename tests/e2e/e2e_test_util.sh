@@ -7,7 +7,7 @@ FROM_NS=
 
 # Derive resources names from the test name. Allows for pre-test cleanup
 # and parallel testing of different tests.
-_TEST_NAME=$(basename "$0" .sh)
+: "${_TEST_NAME:=$(basename "$0" .sh)}"
 _TEST_HASH=$(printf '%s' "$_TEST_NAME" | cksum | awk '{print $1}')
 _OCTET2=$(( (_TEST_HASH >> 8) & 0xFF ))
 _OCTET3=$(( _TEST_HASH & 0xFF ))
@@ -106,6 +106,9 @@ destroy_sandbox() {
     # netns should be unmounted AND deleted
     umount /var/run/netns/${NETNS_NAME} || true
     ip netns delete ${NETNS_NAME} || true
+
+    # Explicitly remove root-side veth in case namespace deletion didn't.
+    ip link del ${VETH_HOST} 2>/dev/null || true
 
         umount ${WORKDIR}/bpf || true
         umount ${WORKDIR}/ns/mnt || true

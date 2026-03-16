@@ -1,0 +1,3 @@
+TRAFFIC="tcp4 tcp6"
+MATCH_RULE="tcp.flags any syn"
+NOMATCH_RULE="tcp.flags eq fin"

@@ -5,9 +5,13 @@
 
 #include <sys/socket.h>
 
+#include <bpfilter/chain.h>
 #include <bpfilter/hook.h>
+#include <bpfilter/matcher.h>
+#include <bpfilter/rule.h>
 
 #include "bpfilter/dump.h"
+#include "bpfilter/helper.h"
 #include "bpfilter/list.h"
 #include "bpfilter/pack.h"
 #include "fake.h"
@@ -730,6 +734,54 @@ static void hookopts_parse_opts_empty_list(void **state)
     assert_int_equal(hookopts->used_opts, 0);
 }
 
+static void hook_matcher_compat(void **state)
+{
+    (void)state;
+
+    for (int type = 0; type < _BF_MATCHER_TYPE_MAX; ++type) {
+        const struct bf_matcher_meta *meta = bf_matcher_get_meta(type);
+        const struct bf_matcher_ops *ops = NULL;
+        enum bf_matcher_op op;
+
+        if (type == BF_MATCHER_SET)
+            continue;
+
+        assert_non_null(meta);
+
+        for (op = 0; op < _BF_MATCHER_OP_MAX; ++op) {
+            ops = bf_matcher_get_ops(type, op);
+            if (ops)
+                break;
+        }
+        assert_non_null(ops);
+
+        for (int hook = 0; hook < _BF_HOOK_MAX; ++hook) {
+            _free_bf_chain_ struct bf_chain *chain = NULL;
+            _clean_bf_list_ bf_list rules =
+                bf_list_default(bf_rule_free, bf_rule_pack);
+            struct bf_rule *rule = NULL;
+            _cleanup_free_ void *payload = NULL;
+            int r;
+
+            payload = calloc(1, ops->ref_payload_size);
+            assert_non_null(payload);
+
+            assert_ok(bf_rule_new(&rule));
+            assert_ok(bf_rule_add_matcher(rule, type, op, payload,
+                                          ops->ref_payload_size));
+            assert_ok(bf_list_add_tail(&rules, rule));
+
+            r = bf_chain_new(&chain, "test", hook, BF_VERDICT_ACCEPT, NULL,
+                             &rules);
+
+            if (meta->unsupported_hooks & BF_FLAG(hook))
+                assert_int_equal(r, -ENOTSUP);
+            else
+                assert_ok(r);
+        }
+    }
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -762,6 +814,7 @@ int main(void)
         cmocka_unit_test(hookopts_dump_priorities),
         cmocka_unit_test(hookopts_parse_opts_list),
         cmocka_unit_test(hookopts_parse_opts_empty_list),
+        cmocka_unit_test(hook_matcher_compat),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

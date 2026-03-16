@@ -1,0 +1,2 @@
+TRAFFIC="tcp4 tcp6"
+MATCH_RULE="meta.flow_hash range 0-4294967295"

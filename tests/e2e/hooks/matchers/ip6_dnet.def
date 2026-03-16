@@ -1,0 +1,3 @@
+TRAFFIC="tcp6"
+MATCH_RULE="ip6.dnet eq \$TRAFFIC_DST_IP6/128"
+NOMATCH_RULE="ip6.dnet eq 2001:db8::/32"

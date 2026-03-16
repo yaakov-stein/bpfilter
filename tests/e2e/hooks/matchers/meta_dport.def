@@ -1,0 +1,3 @@
+TRAFFIC="tcp4 tcp6"
+MATCH_RULE="meta.dport eq \$MATCH_PORT"
+NOMATCH_RULE="meta.dport eq 0"

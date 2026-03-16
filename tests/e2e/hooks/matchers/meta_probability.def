@@ -1,0 +1,3 @@
+TRAFFIC="tcp4 tcp6"
+MATCH_RULE="meta.probability eq 100%"
+NOMATCH_RULE="meta.probability eq 0%"

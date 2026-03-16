@@ -1,0 +1,3 @@
+TRAFFIC="tcp4 tcp6"
+MATCH_RULE="meta.l3_proto eq \$TRAFFIC_L3_PROTO"
+NOMATCH_RULE="meta.l3_proto eq \$TRAFFIC_L3_PROTO_NOT"

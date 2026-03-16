@@ -1,0 +1,3 @@
+TRAFFIC="tcp4"
+MATCH_RULE="ip4.dnet eq \$TRAFFIC_DST_IP/32"
+NOMATCH_RULE="ip4.dnet eq 198.51.100.0/24"

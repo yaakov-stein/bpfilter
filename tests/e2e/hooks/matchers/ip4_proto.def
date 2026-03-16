@@ -1,0 +1,3 @@
+TRAFFIC="tcp4"
+MATCH_RULE="ip4.proto eq tcp"
+NOMATCH_RULE="ip4.proto eq udp"

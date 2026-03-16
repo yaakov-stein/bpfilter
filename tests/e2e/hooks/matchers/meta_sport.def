@@ -1,0 +1,3 @@
+TRAFFIC="tcp4 tcp6"
+MATCH_RULE="meta.sport range 1024-65535"
+NOMATCH_RULE="meta.sport eq 0"

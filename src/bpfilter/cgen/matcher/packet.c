@@ -259,6 +259,7 @@ static int _bf_matcher_pkt_generate_ip6_dscp(struct bf_program *program,
      * Byte 1: dscp_low (4 bits) | flow_label_high (4 bits)
      * Load 2 bytes, mask with 0x0ff0, compare against dscp << 4. */
     EMIT(program, BPF_LDX_MEM(BPF_H, BPF_REG_1, BPF_REG_6, 0));
+    EMIT(program, BPF_ENDIAN(BPF_TO_BE, BPF_REG_1, 16));
     EMIT(program, BPF_ALU64_IMM(BPF_AND, BPF_REG_1, 0x0ff0));
 
     EMIT_FIXUP_JMP_NEXT_RULE(

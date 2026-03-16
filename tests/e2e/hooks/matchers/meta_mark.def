@@ -1,0 +1,3 @@
+TRAFFIC="tcp4 tcp6"
+MATCH_RULE="meta.mark eq 0"
+NOMATCH_RULE="meta.mark eq 42"
