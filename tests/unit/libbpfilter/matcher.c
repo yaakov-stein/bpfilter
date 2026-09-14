@@ -545,6 +545,14 @@ static void get_meta(void **state)
     meta = bf_matcher_get_meta(BF_MATCHER_IP6_DADDR);
     assert_non_null(meta);
 
+    meta = bf_matcher_get_meta(BF_MATCHER_META_SPORT);
+    assert_non_null(meta);
+    assert_int_equal(meta->hdr_payload_size, sizeof(uint16_t));
+
+    meta = bf_matcher_get_meta(BF_MATCHER_META_DPORT);
+    assert_non_null(meta);
+    assert_int_equal(meta->hdr_payload_size, sizeof(uint16_t));
+
     // Just verify the function doesn't crash for all types
     // (not all types have meta defined, so some may return NULL)
     for (enum bf_matcher_type type = 0; type < _BF_MATCHER_TYPE_MAX; ++type)
@@ -563,6 +571,14 @@ static void get_ops(void **state)
 
     ops = bf_matcher_get_ops(BF_MATCHER_TCP_DPORT, BF_MATCHER_RANGE);
     assert_non_null(ops);
+
+    ops = bf_matcher_get_ops(BF_MATCHER_META_SPORT, BF_MATCHER_IN);
+    assert_non_null(ops);
+    assert_int_equal(ops->ref_payload_size, sizeof(uint16_t));
+
+    ops = bf_matcher_get_ops(BF_MATCHER_META_DPORT, BF_MATCHER_IN);
+    assert_non_null(ops);
+    assert_int_equal(ops->ref_payload_size, sizeof(uint16_t));
 
     // Not all combinations are valid, so some may return NULL
     // Just verify the function doesn't crash

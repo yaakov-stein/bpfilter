@@ -277,6 +277,28 @@ static void new_from_raw_multiple_keys(void **state)
     assert_int_equal(bf_hashset_size(&set->elems), 2);
 }
 
+static void new_from_raw_with_meta_port_keys(void **state)
+{
+    _free_bf_set_ struct bf_set *set = NULL;
+    const uint8_t ip4_dport[] = {192, 0, 2, 1, 0x12, 0x34};
+
+    (void)state;
+
+    assert_ok(bf_set_new_from_raw(&set, "ip4_dport", "(ip4.daddr, meta.dport)",
+                                  "{192.0.2.1, 4660}"));
+    assert_int_equal(set->elem_size, sizeof(ip4_dport));
+    assert_true(bf_hashset_contains(&set->elems, ip4_dport));
+    bf_set_free(&set);
+
+    assert_ok(bf_set_new_from_raw(&set, "ip6_dport", "(ip6.daddr, meta.dport)",
+                                  "{2001:db8::1, 443}"));
+    assert_int_equal(set->elem_size, 16 + sizeof(uint16_t));
+    bf_set_free(&set);
+
+    assert_ok(bf_set_new_from_raw(&set, "sport", "(meta.sport)", "{12345}"));
+    assert_int_equal(set->elem_size, sizeof(uint16_t));
+}
+
 static void new_from_raw_invalid(void **state)
 {
     _free_bf_set_ struct bf_set *set = NULL;
@@ -472,6 +494,7 @@ int main(void)
         cmocka_unit_test(dump_empty),
         cmocka_unit_test(new_from_raw),
         cmocka_unit_test(new_from_raw_multiple_keys),
+        cmocka_unit_test(new_from_raw_with_meta_port_keys),
         cmocka_unit_test(new_from_raw_invalid),
         cmocka_unit_test(add_many_basic),
         cmocka_unit_test(add_many_mismatched_key_count),

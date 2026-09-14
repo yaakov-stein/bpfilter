@@ -129,6 +129,13 @@ static void udp_dport_in(void **state)
             bft::UDP {.sport = 12345, .dport = 8080},
         test->verdictAccept());
 
+    bft_assert_prog_run(
+        "test_udp_dport", test->hook(),
+        bft::Ethernet() /
+            bft::IPv4 {.saddr = "127.0.0.1", .daddr = "127.0.0.2"} /
+            bft::TCP {.sport = 12345, .dport = 53},
+        test->verdictAccept());
+
     bft_assert_counter_eq("test_udp_dport", 0, 2, -1);
 }
 
